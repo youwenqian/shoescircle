@@ -1,0 +1,16 @@
+.bodyContent{
+    width:80%;
+    margin-left: 10%;
+}
+.flex-container {
+    display: -webkit-flex;
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-item {
+    background-color: cornflowerblue;
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+}
