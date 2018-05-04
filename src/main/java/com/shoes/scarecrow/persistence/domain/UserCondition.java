@@ -13,7 +13,9 @@ import java.io.Serializable;
 @Data
 public class UserCondition extends BaseCondition implements Serializable {
     private String userName;
+    private String id;
     private String nickName;
     private String taobaoName;
     private String stockId;
+    private String confirmPassword;
 }

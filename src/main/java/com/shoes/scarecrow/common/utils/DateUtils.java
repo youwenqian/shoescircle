@@ -2,10 +2,8 @@ package com.shoes.scarecrow.common.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.SimpleTimeZone;
-import java.util.TimeZone;
+import java.time.LocalDate;
+import java.util.*;
 
 /**
 *	@author wangyc
@@ -70,6 +68,34 @@ public class DateUtils {
     	return sdf.format(date);
     }
 
+    public static List<String> getLastDaysByPatten(String pattern,int n){
+	    List<String> dataFormatStrList = new ArrayList<>();
+        Calendar calendar = Calendar.getInstance();
+        Date date = calendar.getTime();
+        String dateStr = null;
+        for(int i=0;i<n;i++){
+            calendar.add(Calendar.DATE,-1);
+            date = calendar.getTime();
+            dateStr = formatDate(date,pattern);
+            dataFormatStrList.add(0,dateStr);
+        }
+	    return dataFormatStrList;
+    }
+
+    public static List<String> getLastDaysByPatten(Date date,String pattern,int n){
+        List<String> dataFormatStrList = new ArrayList<>();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        String dateStr = null;
+        for(int i=0;i<n;i++){
+            calendar.add(Calendar.DATE,-1);
+            date = calendar.getTime();
+            dateStr = formatDate(date,pattern);
+            dataFormatStrList.add(0,dateStr);
+        }
+        return dataFormatStrList;
+    }
+
     public static Date parse(String dateStr, String pattern) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
        return sdf.parse(dateStr);
@@ -78,6 +104,23 @@ public class DateUtils {
     public static Date parse(String dateStr) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_DAY);
         return sdf.parse(dateStr);
+    }
+
+    public static void main(String [] args) throws ParseException {
+        List<String> list =  DateUtils.getLastDaysByPatten("MM-dd",7);
+        list.stream().forEach( a ->System.out.print(a+" "));
+        try {
+            Date date = DateUtils.parse("04-27","MM-dd");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        System.out.println(DateUtils.parse("2018-04-27","yyyy-MM-dd"));
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.MONTH,Integer.valueOf("09")-1);
+        calendar.set(Calendar.DATE,Integer.valueOf("09")+1);
+        System.out.println(DateUtils.formatDate(calendar.getTime(),"yyyy-MM-dd"));
+        list =  DateUtils.getLastDaysByPatten(calendar.getTime(),"MM-dd",7);
+        list.stream().forEach( a ->System.out.print(a+" "));
     }
 
 }

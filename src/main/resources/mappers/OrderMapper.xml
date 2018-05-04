@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shoes.scarecrow.persistence.mappers.OrderMapper">
+  <resultMap id="BaseResultMap" type="com.shoes.scarecrow.persistence.domain.Order">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="buyer_id" jdbcType="INTEGER" property="buyerId" />
+    <result column="seller_id" jdbcType="INTEGER" property="sellerId" />
+    <result column="goods_id" jdbcType="INTEGER" property="goodsId" />
+    <result column="goods_extend_id" jdbcType="INTEGER" property="goodsExtendId" />
+    <result column="qty" jdbcType="INTEGER" property="qty" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="complete_time" jdbcType="TIMESTAMP" property="completeTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="yn" jdbcType="INTEGER" property="yn" />
+  </resultMap>
+  <resultMap id="detailResultMap" type="com.shoes.scarecrow.persistence.domain.OrderDetail">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+    <result column="type_name" jdbcType="VARCHAR" property="typeName" />
+    <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
+    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="size_name" jdbcType="VARCHAR" property="sizeName" />
+    <result column="qty" jdbcType="INTEGER" property="qty" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <insert id="insertOrder" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="com.shoes.scarecrow.persistence.domain.Order">
+    insert into scarecrow.order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="buyerId!=null">
+        buyer_id,
+      </if>
+      <if test="sellerId!=null">
+        seller_id,
+      </if>
+      <if test="goodsId!=null">
+        goods_id,
+      </if>
+      <if test="goodsExtendId!=null">
+        goods_extend_id,
+      </if>
+      <if test="qty!=null">
+        qty,
+      </if>
+      <if test="remark!=null and remark!=''">
+        remark,
+      </if>
+      <if test="createTime!=null">
+        create_time,
+      </if>
+      <if test="status!=null">
+        status,
+      </if>
+      <if test="yn!=null">
+        yn
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="buyerId!=null">
+        #{buyerId},
+      </if>
+      <if test="sellerId!=null">
+        #{sellerId},
+      </if>
+      <if test="goodsId!=null">
+        #{goodsId},
+      </if>
+      <if test="goodsExtendId!=null">
+        #{goodsExtendId},
+      </if>
+      <if test="qty!=null">
+        #{qty},
+      </if>
+      <if test="remark!=null and remark!=''">
+        #{remark},
+      </if>
+      <if test="createTime!=null">
+        #{createTime},
+      </if>
+      <if test="status!=null">
+        #{status},
+      </if>
+      <if test="yn!=null">
+        #{yn}
+      </if>
+    </trim>
+  </insert>
+  <select id="getOrderBySellerId" resultMap="BaseResultMap">
+    select id,buyer_id, seller_id,goods_id,goods_extend_id,qty,remark from order where yn=1 and status=0 and seller_id=#{sellerId}
+  </select>
+  <select id="getOrders" resultMap="detailResultMap">
+    select t1.id,t7.user_name,t2.goods_name,t3.type_name,t4.name as brand_name,t5.name as color_name,t6.name as size_name,t1.qty,t1.create_time,t1.remark from
+ (select id,buyer_id,goods_id,goods_extend_id,qty,create_time,remark from scarecrow.order where yn=1 and status=0 and seller_id = #{userId})t1,
+ (select id,brand_id,goods_class,goods_name from scarecrow.goods where yn=1 and user_id=#{userId})t2,
+ (select id,type_name from scarecrow.shoes_type )t3,
+ (select id,name from scarecrow.brand)t4,
+ (select id,name from scarecrow.color)t5,
+ (select id,name from scarecrow.size)t6,
+ (select id,user_name from scarecrow.user)t7,
+ (select extend_id,good_id,color_id,size_id from scarecrow.good_extend)t8
+ where t1.buyer_id=t7.id and t1.goods_id=t2.id and t1.goods_extend_id = t8.extend_id and t2.brand_id=t4.id and t2.goods_class=t3.id and t8.color_id = t5.id and t8.size_id =t6.id
+  </select>
+  <update id="updateOrderById" parameterType="com.shoes.scarecrow.persistence.domain.Order">
+    update order set status=1 where yn=1 and id=#{id}
+  </update>
+  <update id="deleteOrderById">
+    update order set yn = 0 where id=#{id}
+  </update>
+</mapper>

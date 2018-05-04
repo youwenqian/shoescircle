@@ -47,18 +47,6 @@ public class BrandController {
         int start = (page-1)*limit;
         condition.setStartRow(start);
         List<Brand> list = brandService.queryByCondition(condition);
-//        list = new ArrayList<>();
-//        for(int i=0;i<50;i++){
-//            Brand brand = new Brand();
-//            brand.setId(i);
-//            brand.setName("品牌"+i);
-//            brand.setCreateUser("创建人"+i);
-//            brand.setCreateTime(new Date());
-//            brand.setUpdateUser("更新人"+i);
-//            brand.setUpdateTime(new Date());
-//            brand.setRemark("备注"+i);
-//            list.add(brand);
-//        }
         map.put("code","0");
         map.put("msg","");
         map.put("count",total);
@@ -147,13 +135,7 @@ public class BrandController {
         log.info(session.getAttribute("userName")+"进入到获取品牌简单信息的方法");
         Map<String,Object> map = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
-        List<Brand> list = new ArrayList<>();
-        for(int i=0;i<50;i++){
-            Brand brand = new Brand();
-            brand.setId(i);
-            brand.setName("品牌"+i);
-            list.add(brand);
-        }
+        List<Brand> list = brandService.queryAllBrand();
         map.put("data",list);
         try {
             log.info(session.getAttribute("userName")+"退出到获取品牌简单信息的方法，result="+mapper.writeValueAsString(map));

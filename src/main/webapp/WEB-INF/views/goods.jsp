@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String path = request.getContextPath();
-    String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
 %>
 <html>
 <head>
@@ -16,7 +16,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="<%=basePath%>js/login/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="<%=basePath%>js/login/css/normalize.css"/>
     <link rel="stylesheet" type="text/css" href="<%=basePath%>js/login/css/default.css">
     <link rel="stylesheet" type="text/css" href="<%=basePath%>js/login/css/styles.css">
     <link rel="stylesheet" type="text/css" href="<%=basePath%>js/bootstrap/css/bootstrap.css">
@@ -25,13 +25,13 @@
     <script src="<%=basePath%>js/html5shiv/html5shiv.min.js"></script>
     <![endif]-->
     <!-- layui -->
-    <link rel="stylesheet" href="<%=basePath%>js/layui/css/layui.css"  media="all">
+    <link rel="stylesheet" href="<%=basePath%>js/layui/css/layui.css" media="all">
     <script src="<%=basePath%>js/jquery-1.9.1.min.js"></script>
     <script src="<%=basePath%>js/layui/layui.js" charset="utf-8"></script>
     <script src="<%=basePath%>js/bootstrap/js/bootstrap.js"></script>
 </head>
-<body class="layui-layout-body">
-<form class="layui-form layui-form-pane" id="search-goods-form" style="padding: 5px;">
+<body class="layui-layout-body" style="background-color: #f1f1f1;">
+<form class="layui-form layui-form-pane" id="search-goods-form" style="padding: 5px;margin-top:5px;">
     <div class="layui-form-item">
         <div class="col-lg-4">
             <label class="layui-form-label">名称</label>
@@ -42,7 +42,8 @@
         <div class="col-lg-4">
             <label class="layui-form-label">品牌</label>
             <div class="layui-input-block">
-                <select name="brandId" id="goodsBrandSearch" lay-filter="brandIdSearchFilter" lay-search="" style="width:200px;">
+                <select name="brandId" id="goodsBrandSearch" lay-filter="brandIdSearchFilter" lay-search=""
+                        style="width:200px;">
                     <option value="">请选择</option>
                 </select>
             </div>
@@ -53,17 +54,16 @@
     </div>
     <div class="layui-form-item">
         <div class="col-lg-4">
-            <label class="layui-form-label">尺码</label>
+            <label class="layui-form-label">关键字</label>
             <div class="layui-input-block">
-                <select name="goodsSize" id="goodsSizeSearch" lay-filter="goodsSizeSearchFilter" lay-search="" style="width:200px;">
-                    <option value="">请选择</option>
-                </select>
+                <input type="text" name="keyword" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="col-lg-4">
             <label class="layui-form-label">分类</label>
             <div class="layui-input-block">
-                <select name="goodsClass" id="goodsTypeSearch" lay-filter="goodsClassSearchFilter" lay-search="" style="width:200px;">
+                <select name="goodsClass" id="goodsTypeSearch" lay-filter="goodsClassSearchFilter" lay-search=""
+                        style="width:200px;">
                     <option value="">请选择</option>
                 </select>
             </div>
@@ -73,45 +73,53 @@
         </div>
     </div>
 </form>
-<table class="layui-hide" id="goodsManageTable" lay-filter="goodTable"></table>
+<table class="layui-table" id="goodsManageTable" lay-filter="goodTable"></table>
 <form id="editGoodsForm" role="form" style="display:none">
-    <div class = "form-group">
+    <div class="form-group">
         <input type="text" name="id" id="idEdit" hidden>
     </div>
-    <div class="form-group row" style="margin-left:0px;margin-right:0px;margin-bottom:0px"">
-        <label for="goodsName" class="col-sm-2 control-label">名称</label>
-        <div class="col-sm-4">
-            <input type="text" class="form-control" id="goodsNameEdit" name="goodsName" placeholder=“请输入名称”>
-        </div>
-        <label for="goodsBrandEdit" class="col-sm-2 control-label">品牌</label>
-        <div class="col-sm-4">
-            <select name="brandId" id="goodsBrandEdit" class="form-control" lay-search="">
-                <option value="">请选择</option>
-            </select>
-        </div>
+    <div class="form-group row" style="margin-left:0px;margin-right:0px;margin-bottom:0px"
+    ">
+    <label for="goodsName" class="col-sm-2 control-label">名称</label>
+    <div class="col-sm-4">
+        <input type="text" class="form-control" required id="goodsNameEdit" name="goodsName" placeholder=“请输入名称”>
+    </div>
+    <label for="goodsBrandEdit" class="col-sm-2 control-label">品牌</label>
+    <div class="col-sm-4">
+        <select name="brandId" id="goodsBrandEdit" required class="form-control" lay-search="">
+            <option value="">请选择</option>
+        </select>
+    </div>
     </div>
     <div class="form-group">
-        <label for="goodsSizeEdit" class="col-sm-2 control-label">尺码</label>
-        <div class="col-sm-4">
-            <select name="goodsSize" id="goodsSizeEdit" class="form-control" lay-search="">
+        <label for="goodsClassAdd" class="col-sm-2 control-label">性别</label>
+        <div class="col-sm-4" style="margin-bottom: 10px;">
+            <select name="sex" id="sexEdit" required class="form-control" lay-search="">
                 <option value="">请选择</option>
+                <option value="0">男</option>
+                <option value="1">女</option>
+                <option value="2">通用</option>
             </select>
         </div>
-        <label for="goodsColor" class="col-sm-2 control-label">颜色</label>
-        <div class="col-sm-4">
-            <input type="text" class="form-control" id="goodsColorEdit" name="goodsColor" placeholder="请输入名字">
+        <label for="statusEdit" class="col-sm-2 control-label">状态</label>
+        <div class="col-sm-4"  style="margin-bottom: 10px;">
+            <select name="status" id="statusEdit" required class="form-control" lay-search="">
+                <option value="">请选择</option>
+                <option value="1">上架</option>
+                <option value="0">下架</option>
+            </select>
         </div>
     </div>
     <div class="form-group">
         <label for="goodsTypeEdit" class="col-sm-2 control-label">分类</label>
         <div class="col-sm-4">
-            <select name="goodsClass" id="goodsTypeEdit" class="form-control" lay-search="">
+            <select name="goodsClass" id="goodsTypeEdit" required class="form-control" lay-search="">
                 <option value="">请选择</option>
             </select>
         </div>
         <label for="keyword" class="col-sm-2 control-label">关键字</label>
         <div class="col-sm-4">
-            <input type="text" class="form-control" id="keywordEdit" name="keyword" placeholder="商品关键字">
+            <input type="text" class="form-control" id="keywordEdit" required name="keyword" placeholder="商品关键字">
         </div>
     </div>
     <div class="form-group">
@@ -125,47 +133,62 @@
         </div>
     </div>
     <div class="form-group">
-        <button type="button" onclick="editGoodsBtn()" id="editGoodsButton" class="btn btn-default" style="float: right; margin-bottom:  15px; margin-right: 15px;">确定</button>
+        <label for="keyword" class="col-sm-2 control-label">描述</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="descEdit" name="goodsDesc" placeholder="">
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="button" onclick="editGoodsBtn()" id="editGoodsButton" class="btn btn-default"
+                style="float: right; margin-bottom:  15px; margin-right: 15px;">确定
+        </button>
     </div>
 </form>
 <form id="addGoodsForm" role="form" style="display:none">
-    <div class = "form-group">
+    <div class="form-group">
         <input type="text" name="id" id="idAdd" hidden>
     </div>
-    <div class="form-group row" style="margin-left:0px;margin-right:0px;margin-bottom:0px"">
-    <label for="goodsName" class="col-sm-2 control-label">名称</label>
-    <div class="col-sm-4">
-        <input type="text" class="form-control" id="goodsNameAdd" name="goodsName" placeholder=“请输入名称”>
-    </div>
-    <label for="goodsBrandAdd" class="col-sm-2 control-label">品牌</label>
-    <div class="col-sm-4">
-        <select name="brandId" id="goodsBrandAdd" class="form-control" lay-search="">
-            <option value="">请选择</option>
-        </select>
-    </div>
-    </div>
-    <div class="form-group">
-        <label for="goodsSizeAdd" class="col-sm-2 control-label">尺码</label>
+    <div class="form-group row" style="margin-left:0px;margin-right:0px;margin-bottom:0px">
+        <label for="goodsName" class="col-sm-2 control-label">名称</label>
         <div class="col-sm-4">
-            <select name="goodsSize" id="goodsSizeAdd" class="form-control" lay-search="">
+            <input type="text" class="form-control" required id="goodsNameAdd" name="goodsName" placeholder=“请输入名称”>
+        </div>
+        <label for="goodsBrandAdd" class="col-sm-2 control-label">品牌</label>
+        <div class="col-sm-4">
+            <select name="brandId" id="goodsBrandAdd" required class="form-control" lay-search="">
                 <option value="">请选择</option>
             </select>
         </div>
-        <label for="goodsColor" class="col-sm-2 control-label">颜色</label>
-        <div class="col-sm-4">
-            <input type="text" class="form-control" id="goodsColorAdd" name="goodsColor" placeholder="请输入名字">
+    </div>
+    <div class="form-group">
+        <label for="sexAdd" class="col-sm-2 control-label">性别</label>
+        <div class="col-sm-4" style="margin-bottom: 10px;">
+            <select name="sex" id="sexAdd" required class="form-control" lay-search="">
+                <option value="">请选择</option>
+                <option value="0">男</option>
+                <option value="1">女</option>
+                <option value="2">通用</option>
+            </select>
+        </div>
+        <label for="statusAdd" class="col-sm-2 control-label">状态</label>
+        <div class="col-sm-4" style="margin-bottom: 10px;">
+            <select name="status" id="statusAdd" required class="form-control" lay-search="">
+                <option value="">请选择</option>
+                <option value="1" selected>上架</option>
+                <option value="0">下架</option>
+            </select>
         </div>
     </div>
     <div class="form-group">
         <label for="goodsClassAdd" class="col-sm-2 control-label">分类</label>
         <div class="col-sm-4">
-            <select name="goodsClass" id="goodsClassAdd" class="form-control" lay-search="">
+            <select name="goodsClass" id="goodsClassAdd" required class="form-control" lay-search="">
                 <option value="">请选择</option>
             </select>
         </div>
         <label for="keyword" class="col-sm-2 control-label">关键字</label>
         <div class="col-sm-4">
-            <input type="text" class="form-control" id="keywordAdd" name="keyword" placeholder="商品关键字">
+            <input type="text" class="form-control" id="keywordAdd" required name="keyword" placeholder="商品关键字">
         </div>
     </div>
     <div class="form-group">
@@ -179,12 +202,20 @@
         </div>
     </div>
     <div class="form-group">
-        <button type="button" onclick="addGoodsBtn()" id="addGoodsButton" class="btn btn-default" style="float: right; margin-bottom:  15px; margin-right: 15px;">确定</button>
+        <label for="keyword" class="col-sm-2 control-label">描述</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="descAdd" name="goodsDesc" placeholder="">
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="button" onclick="addGoodsBtn()" id="addGoodsButton" class="btn btn-default"
+                style="float: right; margin-bottom:  15px; margin-right: 15px;">确定
+        </button>
     </div>
 </form>
 <script>
     //JavaScript代码区域
-    layui.use('element', function(){
+    layui.use('element', function () {
         var element = layui.element;
 
     });

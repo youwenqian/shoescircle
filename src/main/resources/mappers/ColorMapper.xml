@@ -4,14 +4,17 @@
   <resultMap id="BaseResultMap" type="com.shoes.scarecrow.persistence.domain.Color">
     <result column="id" jdbcType="INTEGER" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="desc" jdbcType="VARCHAR" property="desc" />
+    <result column="remark" jdbcType="VARCHAR" property="desc" />
   </resultMap>
   <insert id="insert" parameterType="com.shoes.scarecrow.persistence.domain.Color">
-    insert into color (id, name, desc
+    insert into color (id, name, remark
       )
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{desc,jdbcType=VARCHAR}
       )
   </insert>
+  <select id="getAllColor" resultMap="BaseResultMap">
+    select id,name,remark from color
+  </select>
   <insert id="insertSelective" parameterType="com.shoes.scarecrow.persistence.domain.Color">
     insert into color
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -21,7 +24,7 @@
       <if test="name != null">
         name,
       </if>
-      <if test="desc != null">
+      <if test="remark != null">
         desc,
       </if>
     </trim>

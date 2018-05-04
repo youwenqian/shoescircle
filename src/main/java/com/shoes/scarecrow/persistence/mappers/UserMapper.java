@@ -13,7 +13,7 @@ public interface UserMapper {
 
     int insertSelective(User record);
 
-    User getUserByNameAndPassword(@Param("userName") String userName, @Param("passWord") String passWord);
+    User getUserByNameAndPassword(@Param("userName") String userName, @Param("passWord") String passWord,@Param("userType") int key);
 
     int queryCountByCondition(UserCondition userCondition);
 
@@ -21,9 +21,9 @@ public interface UserMapper {
 
     User queryById(int id);
 
-    User queryByUserName(String userName);
+    User queryByUserName(@Param("userName") String userName);
 
-    int updateUser(User user);
+    int updateUserById(User user);
 
     int delById(String id);
 }

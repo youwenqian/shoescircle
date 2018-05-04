@@ -40,7 +40,7 @@
                 <div id="inStoreNum" style="margin-right: 10px;padding:10px; height:100%; background-color: #ffffff; border:1px solid; border-color: #cccccc;border-radius:10px;">
                    <div class="col-sm-6">
                        <span style="font-family: initial;font-size:40px;">入库金额</span><br>
-                       <span style="font-family: serif;font-size:  40px;font-style: italic;">￥1200</span>
+                       <span id="intoStorePrice" style="font-family: serif;font-size:  40px;font-style: italic;">￥1200</span>
                    </div>
                     <div class="col-sm-6">
                         <img src="<%=basePath%>image/instore1.jpg" style="width:auto;height: auto;">
@@ -49,7 +49,7 @@
                 <div id="outStoreNUm" style="margin-top: 10px;margin-right: 10px;padding: 10px;height:100%; background-color: #ffffff; border:1px solid; border-color: #cccccc;border-radius:10px; ">
                     <div class="col-sm-6">
                         <span style="font-family: initial;font-size:40px;">出库金额</span><br>
-                        <span style="font-family: serif;font-size:  40px;font-style: italic;">￥1200</span>
+                        <span id="outStorePrice" style="font-family: serif;font-size:  40px;font-style: italic;">￥1200</span>
                     </div>
                     <div class="col-sm-6">
                         <img src="<%=basePath%>image/outstore1.jpg" style="width:auto;height: auto;">
@@ -70,19 +70,47 @@
             var element = layui.element;
 
         });
-        var dataAxis = ['一', '二', '三', '四', '五', '六', '七'];
-        var data = [220, 182, 191, 234, 290, 330, 310];
-        var yMax = 500;
+        $.ajax({
+            type: "POST",
+            url: "/shoes/stock/getStockIn",
+            dataType:"json",
+            async:false,
+            contentType: "application/json",
+            success: function (data) {
+                $("#intoStorePrice").html("￥ "+data.value);
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "/shoes/stock/getStockOut",
+            dataType:"json",
+            async:false,
+            contentType: "application/json",
+            success: function (data) {
+                $("#outStorePrice").html("￥ "+data.value);
+            }
+        });
+
+        var dataAxis = [];
         var dataShadow = [];
 
-        for (var i = 0; i < data.length; i++) {
-            dataShadow.push(yMax);
-        }
+        $.ajax({
+            type: "POST",
+            url: "/shoes/stock/getStockFlowSevenOut",
+            dataType:"json",
+            async:false,
+            contentType: "application/json",
+            success: function (data) {
+                dataShadow = data.data;
+                dataAxis = data.dataAxis;
+            }
+        });
         var myChart = echarts.init(document.getElementById("outStore"));
         option = {
             title: {
-                text: '特性示例：渐变色 阴影 点击缩放',
-                subtext: 'Feature Sample: Gradient Color, Shadow, Click Zoom'
+                text: '最近7天的出库金额',
+                subtext: '不包括当天的出库金额'
             },
             xAxis: {
                 data: dataAxis,
@@ -122,16 +150,6 @@
                 { // For shadow
                     type: 'bar',
                     itemStyle: {
-                        normal: {color: 'rgba(0,0,0,0.05)'}
-                    },
-                    barGap:'-100%',
-                    barCategoryGap:'40%',
-                    data: dataShadow,
-                    animation: false
-                },
-                {
-                    type: 'bar',
-                    itemStyle: {
                         normal: {
                             color: new echarts.graphic.LinearGradient(
                                 0, 0, 0, 1,
@@ -153,33 +171,66 @@
                             )
                         }
                     },
-                    data: data
+                    barGap:'-100%',
+                    barCategoryGap:'40%',
+                    data: dataShadow,
+                    animation: false
                 }
             ]
         };
         myChart.setOption(option);
 
+        var inStoreAxis = [];
+        var inStoreData = [];
+        $.ajax({
+            type: "POST",
+            url: "/shoes/stock/getStockFlowSevenIn",
+            dataType:"json",
+            async:false,
+            contentType: "application/json",
+            success: function (data) {
+                inStoreData = data.data;
+                inStoreAxis = data.dataAxis;
+            }
+        });
         option2 = {
+            title: {
+                text: '最近7天的入库金额',
+                subtext: '不包括当天的入库金额'
+            },
             xAxis: {
                 type: 'category',
                 boundaryGap: false,
-                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                data: inStoreAxis
             },
             yAxis: {
                 type: 'value'
             },
             series: [{
-                data: [820, 932, 901, 934, 1290, 1330, 1320],
-                type: 'line',
-                areaStyle: {}
+                data: inStoreData,
+                type: 'line'
             }]
         };
         var myChart2 = echarts.init(document.getElementById("inStore"));
         myChart2.setOption(option2);
+
+        var kaidanAxis =[];
+        var kaidanData = [];
+        $.ajax({
+            type: "POST",
+            url: "/shoes/stock/getSevenOutBills",
+            dataType:"json",
+            async:false,
+            contentType: "application/json",
+            success: function (data) {
+                kaidanData = data.data;
+                kaidanAxis = data.dataAxis;
+            }
+        });
         option1 = {
             title : {
-                text: '某站点用户访问来源',
-                subtext: '纯属虚构',
+                text: '最近7天开单数',
+                subtext: '不包括当天的开单数',
                 x:'center'
             },
             tooltip : {
@@ -189,21 +240,15 @@
             legend: {
                 orient: 'vertical',
                 left: 'left',
-                data: ['一','二','三','四','五']
+                data: kaidanAxis
             },
             series : [
                 {
                     name: '访问来源',
                     type: 'pie',
-                    radius : '55%',
-                    center: ['50%', '60%'],
-                    data:[
-                        {value:335, name:'一'},
-                        {value:310, name:'二'},
-                        {value:234, name:'三'},
-                        {value:135, name:'四'},
-                        {value:1548, name:'五'}
-                    ],
+                    radius : '80%',
+                    center: ['50%', '50%'],
+                    data:kaidanData,
                     itemStyle: {
                         emphasis: {
                             shadowBlur: 10,

@@ -14,6 +14,8 @@ public interface BrandMapper {
 
     List<Brand> queryByCondition(BrandCondition condition);
 
+    List<Brand> queryAll();
+
     int queryCountByCondition(BrandCondition condition);
 
     Brand queryById(int id);

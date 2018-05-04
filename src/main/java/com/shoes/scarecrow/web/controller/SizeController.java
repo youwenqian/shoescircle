@@ -30,40 +30,24 @@ public class SizeController {
 
     @Autowired
     private SizeService sizeService;
-    @RequestMapping("allDetail")
-    public void getBrandDetailByPage(int page, int limit,String sizeName, HttpSession session, HttpServletResponse response){
-        log.info(session.getAttribute("userName")+"进入到分页获取品牌信息的方法，limit="+limit+",page="+page+",name="+sizeName);
+    @RequestMapping("/allDetail")
+    public void getAllSizeDetailByPage( HttpSession session, HttpServletResponse response){
+        log.info(session.getAttribute("userName")+"进入到分页获取尺码信息的方法");
         Map<String,Object> map = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
         SizeCondition condition = new SizeCondition();
-        condition.setSizeName(sizeName);
+        condition.setSizeName(null);
         condition.setPage(null);
         condition.setPageSize(null);
         condition.setStartRow(null);
         int total = sizeService.queryCountByCondition(condition);
-        condition.setPage(page);
-        condition.setPageSize(limit);
-        int start = (page-1)*limit;
-        condition.setStartRow(start);
         List<Size> list = sizeService.queryByCondition(condition);
-//        list = new ArrayList<>();
-//        for(int i=0;i<50;i++){
-//            Brand brand = new Brand();
-//            brand.setId(i);
-//            brand.setName("品牌"+i);
-//            brand.setCreateUser("创建人"+i);
-//            brand.setCreateTime(new Date());
-//            brand.setUpdateUser("更新人"+i);
-//            brand.setUpdateTime(new Date());
-//            brand.setRemark("备注"+i);
-//            list.add(brand);
-//        }
         map.put("code","0");
         map.put("msg","");
         map.put("count",total);
         map.put("data",list);
         try {
-            log.info(session.getAttribute("userName")+"退出分页获取品牌信息的方法，result="+mapper.writeValueAsString(map));
+            log.info(session.getAttribute("userName")+"退出分页获取尺码信息的方法，result="+mapper.writeValueAsString(map));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -101,10 +85,10 @@ public class SizeController {
 
     @RequestMapping("/updateSize")
     @ResponseBody
-    public Map updateBrand(Size size,HttpSession session){
+    public Map updateSize(Size size,HttpSession session){
         ObjectMapper mapper = new ObjectMapper();
         try{
-            log.info(session.getAttribute("userName")+"进入修改品牌方法"+mapper.writeValueAsString(size));
+            log.info(session.getAttribute("userName")+"进入修改尺码方法"+mapper.writeValueAsString(size));
         }catch(IOException e ){
             e.printStackTrace();
         }
@@ -115,13 +99,13 @@ public class SizeController {
         }else{
             map.put("success",true);
         }
-        log.info(session.getAttribute("userName")+"离开修改品牌方法，结果影响行数:"+n);
+        log.info(session.getAttribute("userName")+"离开修改尺码方法，结果影响行数:"+n);
         return map;
     }
     @RequestMapping("/deleteSize/{id}")
     @ResponseBody
-    public Map deleteBrand(@PathVariable("id") String id, HttpSession session){
-        log.info(session.getAttribute("userName")+"进入删除品牌方法，删除品牌id="+id);
+    public Map deleteSize(@PathVariable("id") String id, HttpSession session){
+        log.info(session.getAttribute("userName")+"进入删除尺码方法，删除品牌id="+id);
         int ids = Integer.valueOf(id).intValue();
         int n = sizeService.delSize(ids);
         Map map = new HashMap<String,Object>();
@@ -130,7 +114,7 @@ public class SizeController {
         }else{
             map.put("success",true);
         }
-        log.info(session.getAttribute("userName")+"离开删除品牌方法，结果影响行数:"+n);
+        log.info(session.getAttribute("userName")+"离开删除尺码方法，结果影响行数:"+n);
         return map;
     }
 }

@@ -14,22 +14,22 @@ public class GoodsCondition extends BaseCondition implements Serializable {
 
     private static final long serialVersionUID = -1203687943734944473L;
 
-    private Integer userId;
+    private Integer userId;//用户id
 
-    private String keyword;
+    private String keyword;//关键字
 
-    private Integer goodsClass;
+    private Integer goodsClass;//分类id
 
     private String goodsName;
 
-    private Integer brandId;
+    private Integer brandId;//品牌id
 
-    private Integer sex;
+    private Integer sex;//男女
 
     private Integer status;
 
-    private Integer sizeId;
+    private Integer sizeId;//尺码id
 
-    private Integer colorId;
+    private Integer colorId;//颜色id
 
 }

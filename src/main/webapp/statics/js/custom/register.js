@@ -61,12 +61,15 @@ function registerBase() {
         contentType: 'application/json',
         success: function (data) {
             if(data.code=="true"){
-                window.location.href = "index/logout";
+                alert("注册成功！");
+                window.location.href = "/shoes/index/logout";
                 /*layer.open({
                     type: 1,
                     title:'扫码支付',
                     content: $('#erweima') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
                 });*/
+            }else{
+                alert("用户名已经被占用，请重新换一个！");
             }
         }
     });

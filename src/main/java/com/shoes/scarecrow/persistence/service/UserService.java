@@ -25,8 +25,8 @@ public class UserService {
     }
 
 
-    public User getUser(String userName, String passWord) {
-        return userMapper.getUserByNameAndPassword(userName,passWord);
+    public User getUser(String userName, String passWord, int key) {
+        return userMapper.getUserByNameAndPassword(userName,passWord,key);
     }
 
     public int queryCountByCondition(UserCondition userCondition){
@@ -46,7 +46,7 @@ public class UserService {
     }
 
     public int updateUser(User user){
-        return userMapper.updateUser(user);
+        return userMapper.updateUserById(user);
     }
 
     public int delUser(String id){

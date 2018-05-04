@@ -19,6 +19,14 @@
     <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
+  <resultMap id="DayMoneyMap" type="com.shoes.scarecrow.persistence.domain.DayMoney">
+    <result column="createTime" jdbcType="VARCHAR" property="createTime"></result>
+    <result column="total" jdbcType="INTEGER" property="total"></result>
+  </resultMap>
+  <resultMap id="DayBillsMap" type="com.shoes.scarecrow.persistence.domain.DayBills">
+    <result column="createTime" jdbcType="VARCHAR" property="name"></result>
+    <result column="total" jdbcType="INTEGER" property="value"></result>
+  </resultMap>
   <insert id="insert" parameterType="com.shoes.scarecrow.persistence.domain.StockFlow">
     insert into stock_flow (id, user_id, stock_id, 
       goods_id, goods_extend_id, batch_no, 
@@ -33,6 +41,21 @@
       #{createUser,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, 
       #{remark,jdbcType=VARCHAR})
   </insert>
+  <select id="getSevenOutStockFlow" resultMap="DayMoneyMap">
+    select date_format(create_time,'%m-%d') as 'createTime',sum(price*num) as 'total' from scarecrow.stock_flow
+    where user_id=#{userId} and date(create_time) &lt; curdate() and date(create_time) &gt;= date_sub(curdate(),interval #{days} day) group by date_format(create_time,'%m-%d')
+  </select>
+  <select id="getbillsByDay" resultMap="DayBillsMap">
+    select date_format(create_time,'%m-%d') as 'createTime',count(num) as 'total' from scarecrow.stock_flow
+    where user_id=#{userId} and date(create_time) &lt; curdate() and date(create_time) &gt;= date_sub(curdate(),interval #{days} day) group by date_format(create_time,'%m-%d')
+  </select>
+  <select id="getTodayPrice" resultType="java.lang.Integer">
+    select total from (
+    select date_format(create_time,'%y-%m-%d') as createTime,sum(price) total from
+    (select create_time,num*price as price from scarecrow.stock_flow where date_format(create_time,'%y-%m-%d')=curdate() and user_id=#{userId})tt
+     group by date_format(create_time,'%y-%m-%d')
+    )ttt
+  </select>
   <insert id="insertSelective" parameterType="com.shoes.scarecrow.persistence.domain.StockFlow">
     insert into stock_flow
     <trim prefix="(" suffix=")" suffixOverrides=",">

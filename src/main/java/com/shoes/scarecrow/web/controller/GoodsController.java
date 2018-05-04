@@ -3,6 +3,7 @@ package com.shoes.scarecrow.web.controller;
 import com.shoes.scarecrow.persistence.domain.Brand;
 import com.shoes.scarecrow.persistence.domain.Goods;
 import com.shoes.scarecrow.persistence.domain.GoodsCondition;
+import com.shoes.scarecrow.persistence.domain.GoodsDetail;
 import com.shoes.scarecrow.persistence.service.GoodsService;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -39,7 +40,6 @@ public class GoodsController {
         GoodsCondition goodsCondition = new GoodsCondition();
         Integer userId = Integer.valueOf(String.valueOf(session.getAttribute("userId")));
         goodsCondition.setUserId(userId);
-        goodsCondition.setStatus(1);
         goodsCondition.setPage(null);
         goodsCondition.setStartRow(null);
         goodsCondition.setPageSize(null);
@@ -48,33 +48,10 @@ public class GoodsController {
         goodsCondition.setPageSize(limit);
         int start = (page-1)*limit;
         goodsCondition.setStartRow(start);
-//        List<Goods> list = goodsService.queryByCondition(goodsCondition);
+        List<Goods> list = goodsService.queryByCondition(goodsCondition);
         ObjectMapper mapper = new ObjectMapper();
-        List<Map<String,Object>> list = new ArrayList<>();
-        for(int i=0;i<50;i++){
-            Map<String,Object> map1 = new HashMap<String,Object>();
-            map1.put("id",i);
-            map1.put("userId",i);
-            map1.put("price",987.98d);
-            map1.put("keyword","关键字");
-            map1.put("goodsClass",i);
-            map1.put("goodsName","商品"+i);
-            map1.put("brandId",i);
-            map1.put("goodsSize",i);
-            map1.put("goodsColor","颜色");
-            map1.put("sex","男鞋");map1.put("goodsColor","颜色");
-            map1.put("createTime",new Date());
-            map1.put("createUser","创建人");
-            map1.put("updateTime",new Date());
-            map1.put("updateUser","更新人");
-            map1.put("remark","颜色很好看");
-            list.add(map1);
-        }
-        int end = page*limit<=list.size()?page*limit:list.size();
-        List<Map<String,Object>> list2 = list.subList(start,end);
         map.put("code","0");
         map.put("msg","");
-        map.put("count",50);
         map.put("count",total);
         map.put("data",list);
         try {
@@ -82,15 +59,6 @@ public class GoodsController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-       /* ObjectMapper objectMapper = new ObjectMapper();
-        try{
-            String retStr = objectMapper.writeValueAsString(map);
-            response.setCharacterEncoding("utf-8");
-            PrintWriter printWriter = response.getWriter();
-            printWriter.print(retStr);
-        }catch (IOException e){
-            log.error("请求goods/allDetail.do。"+e.getMessage());
-        }*/
         return map;
     }
     @RequestMapping("/deleteType/{id}")
@@ -98,22 +66,45 @@ public class GoodsController {
     public Map deleteGoodsById(@PathVariable("id") Integer goodId,HttpServletResponse response,HttpSession session){
         log.info(session.getAttribute("userName") + "进入到删除商品信息的方法，删除商品id="+goodId);
         Map<String,Object> map = new HashMap<>();
-        map.put("success",true);
+        Goods goods = new Goods();
+        Integer userId = Integer.valueOf(String.valueOf(session.getAttribute("userId")));
+        goods.setUserId(userId);
+        goods.setId(goodId);
+        String userName = String.valueOf(session.getAttribute("userName"));
+        goods.setUpdateUser(userName);
+        goods.setUpdateTime(new Date());
+        goods.setYn(0);
+        int n = goodsService.deleteByUserIdAndId(goods);
+        if(n > 0 ){
+            map.put("success",true);
+        }else{
+            map.put("success",false);
+        }
         return map;
     }
     @RequestMapping("/updateGoods")
     @ResponseBody
-    public Map putGoods(Goods goods,String goodsSize,HttpSession session){
+    public Map putGoods(Goods goods,HttpSession session){
         Map<String,Object> map = new HashMap<>();
         ObjectMapper objMapper = new ObjectMapper();
         try {
-            log.info(session.getAttribute("userName")+"进入修改商品信息方法,修改的商品信息="+objMapper.writeValueAsString(goods)+" goodsSize="+goodsSize);
+            log.info(session.getAttribute("userName")+"进入修改商品信息方法,修改的商品信息="+objMapper.writeValueAsString(goods));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        map.put("success",true);
+        Integer userId = Integer.valueOf(String.valueOf(session.getAttribute("userId")));
+        goods.setUserId(userId);
+        String userName = String.valueOf(session.getAttribute("userName"));
+        goods.setUpdateUser(userName);
+        goods.setUpdateTime(new Date());
+        int n = goodsService.updateGoods(goods);
+        if(n > 0 ){
+            map.put("success",true);
+        }else{
+            map.put("success",false);
+        }
         try {
-            log.info(session.getAttribute("userName")+"离开修改商品信息方法,修改的商品信息="+objMapper.writeValueAsString(goods)+" goodsSize="+goodsSize);
+            log.info(session.getAttribute("userName")+"离开修改商品信息方法,修改的商品信息="+objMapper.writeValueAsString(goods));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -121,64 +112,129 @@ public class GoodsController {
     }
     @RequestMapping("/addGoods")
     @ResponseBody
-    public Map postGoods(Goods goods,String goodsSize,HttpSession session){
+    public Map postGoods(Goods goods, HttpSession session){
         Map<String,Object> map = new HashMap<>();
-        Integer goodSize = Integer.valueOf(goodsSize);
         ObjectMapper objMapper = new ObjectMapper();
+        String userId = String.valueOf(session.getAttribute("userId"));
+        String userName = String.valueOf(session.getAttribute("userName"));
+        goods.setUserId(Integer.valueOf(userId));
+        goods.setYn(1);
+        goods.setCreateTime(new Date());
+        goods.setCreateUser(userName);
         try {
-            log.info(session.getAttribute("userName")+"进入添加商品信息方法,修改的商品信息="+objMapper.writeValueAsString(goods)+" goodsSize="+goodSize);
+            log.info(session.getAttribute("userName")+"进入添加商品信息方法,添加的商品信息="+objMapper.writeValueAsString(goods));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        goodsService.saveGoods(goods,goodSize);
-        map.put("success",true);
+        GoodsCondition condition = new GoodsCondition();
+        condition.setUserId(Integer.valueOf(userId));
+        condition.setPage(null);
+        condition.setStartRow(null);
+        condition.setPageSize(null);
+        condition.setGoodsName(goods.getGoodsName());
+        List<Goods> list = goodsService.queryByCondition(condition);
+        if(list.size()>0){
+            map.put("flag",false);
+            map.put("message","该商品名称已经存在！");
+        }else{
+            int n = goodsService.saveGoods(goods);
+            if(n > 0 ){
+                map.put("flag",true);
+                map.put("message","添加成功！");
+            }else{
+                map.put("flag",false);
+                map.put("message","添加失败！联系管理员");
+            }
+        }
         try {
-            log.info(session.getAttribute("userName")+"离开添加商品信息方法,修改的商品信息="+objMapper.writeValueAsString(goods)+" goodsSize="+goodsSize);
+            log.info(session.getAttribute("userName")+"离开添加商品信息方法,添加的商品信息="+objMapper.writeValueAsString(goods));
         } catch (IOException e) {
             e.printStackTrace();
         }
         return map ;
     }
+    @RequestMapping("/getGoodsIdAndName")
+    @ResponseBody
+    public Map getGoodsIdAndName(HttpSession session){
+        log.info(session.getAttribute("userName")+"进入查找商品name and id信息方法");
+        Map<String,Object> map = new HashMap<>();
+        GoodsCondition goodsCondition = new GoodsCondition();
+        goodsCondition.setPageSize(null);
+        goodsCondition.setPage(null);
+        goodsCondition.setStartRow(null);
+        Integer userId = Integer.valueOf(String.valueOf(session.getAttribute("userId")));
+        goodsCondition.setUserId(userId);
+        List<Goods> list = goodsService.queryByCondition(goodsCondition);
+        map.put("data",list);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            log.info(session.getAttribute("userName")+"离开查找商品name and id信息方法,list="+mapper.writeValueAsString(list));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return map;
+    }
     @RequestMapping("/getGoods")
     @ResponseBody
-    public Map getGoods(int page, int limit, Goods goods,String goodsSize,HttpSession session){
+    public Map getGoods(int page, int limit, GoodsCondition goodsCondition,String goodsSize,HttpSession session){
         Map<String,Object> map = new HashMap<>();
         ObjectMapper objMapper = new ObjectMapper();
         try {
-            log.info(session.getAttribute("userName")+"进入查找商品信息方法,查找的商品信息="+objMapper.writeValueAsString(goods)+" goodsSize="+goodsSize);
+            log.info(session.getAttribute("userName")+"进入查找商品信息方法,查找的商品信息="+objMapper.writeValueAsString(goodsCondition));
         } catch (IOException e) {
             e.printStackTrace();
         }
         ObjectMapper mapper = new ObjectMapper();
-        List<Map<String,Object>> list = new ArrayList<>();
-        for(int i=0;i<50;i++){
-            Map<String,Object> map1 = new HashMap<String,Object>();
-            map1.put("id",i);
-            map1.put("userId",i);
-            map1.put("price",987.98d);
-            map1.put("keyword","关键字");
-            map1.put("goodsType","商品分类");
-            map1.put("goodsName","商品"+i);
-            map1.put("goodsBrand","品牌"+i);
-            map1.put("goodsSize",i+"码");
-            map1.put("goodsColor","颜色");
-            map1.put("sex","男鞋");map1.put("goodsColor","颜色");
-            map1.put("createTime",new Date());
-            map1.put("createUser","创建人");
-            map1.put("updateTime",new Date());
-            map1.put("updateUser","更新人");
-            map1.put("remark","颜色很好看");
-            list.add(map1);
-        }
+        Integer userId = Integer.valueOf(String.valueOf(session.getAttribute("userId")));
+        goodsCondition.setUserId(userId);
+        goodsCondition.setPage(null);
+        goodsCondition.setStartRow(null);
+        goodsCondition.setPageSize(null);
+        int total = goodsService.queryCountByCondition(goodsCondition);
+        goodsCondition.setPage(page);
+        goodsCondition.setPageSize(limit);
+        int start = (page-1)*limit;
+        goodsCondition.setStartRow(start);
+        List<Goods> list = goodsService.queryByCondition(goodsCondition);
         map.put("code","0");
         map.put("msg","");
-        map.put("count",50);
-        int start = (page-1)*limit;
-        int end = page*limit<=list.size()?page*limit:list.size();
-        List<Map<String,Object>> list2 = list.subList(start,end);
-        map.put("data",list2);
+        map.put("count",list.size());
+        map.put("data",list);
         try {
-            log.info(session.getAttribute("userName")+"离开查找商品信息方法,修改的商品信息="+objMapper.writeValueAsString(goods));
+            log.info(session.getAttribute("userName")+"离开查找商品信息方法,查找的商品信息="+objMapper.writeValueAsString(list));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return map ;
+    }
+    @RequestMapping("/getOthersGoods")
+    @ResponseBody
+    public Map getOhtersGoods(int page,int limit,GoodsCondition goodsCondition,HttpSession session){
+        Map<String,Object> map = new HashMap<>();
+        ObjectMapper objMapper = new ObjectMapper();
+        try {
+            log.info(session.getAttribute("userName")+"进入查找其他用户共享商品信息方法,查找的商品信息="+objMapper.writeValueAsString(goodsCondition));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        Integer userId = Integer.valueOf(String.valueOf(session.getAttribute("userId")));
+        goodsCondition.setUserId(userId);
+        goodsCondition.setPage(null);
+        goodsCondition.setStartRow(null);
+        goodsCondition.setPageSize(null);
+        int total = goodsService.queryCountByBuyerCondition(goodsCondition);
+        goodsCondition.setPage(page);
+        goodsCondition.setPageSize(limit);
+        int start = (page-1)*limit;
+        goodsCondition.setStartRow(start);
+        List<GoodsDetail> list = goodsService.queryByBuyerCondition(goodsCondition);
+        map.put("code","0");
+        map.put("msg","");
+        map.put("count",list.size());
+        map.put("data",list);
+        try {
+            log.info(session.getAttribute("userName")+"离开查找其他用户共享商品信息方法,查找的商品信息="+objMapper.writeValueAsString(list));
         } catch (IOException e) {
             e.printStackTrace();
         }

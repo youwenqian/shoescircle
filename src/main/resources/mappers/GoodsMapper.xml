@@ -20,151 +20,287 @@
     <result column="yn" jdbcType="INTEGER" property="yn" />
     <result column="version" jdbcType="INTEGER" property="version" />
   </resultMap>
-  <insert id="insert" parameterType="com.shoes.scarecrow.persistence.domain.Goods">
-    insert into goods (id, user_id, price, 
-      keyword, goods_class, goods_name, 
-      goods_desc, remark, brand_id, 
-      sex, create_time, create_user, 
-      update_time, update_user, status, 
-      yn, version)
-    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{price,jdbcType=DOUBLE}, 
-      #{keyword,jdbcType=VARCHAR}, #{goodsClass,jdbcType=INTEGER}, #{goodsName,jdbcType=VARCHAR}, 
-      #{goodsDesc,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{brandId,jdbcType=INTEGER}, 
-      #{sex,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
-      #{yn,jdbcType=INTEGER}, #{version,jdbcType=INTEGER})
-  </insert>
-  <insert id="insertSelective" parameterType="com.shoes.scarecrow.persistence.domain.Goods">
+  <resultMap id="GoodsDetailMap" type="com.shoes.scarecrow.persistence.domain.GoodsDetail">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="price" jdbcType="DOUBLE" property="price" />
+    <result column="keyword" jdbcType="VARCHAR" property="keyword" />
+    <result column="goods_class" jdbcType="INTEGER" property="goodsClass" />
+    <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+    <result column="goods_desc" jdbcType="VARCHAR" property="goodsDesc" />
+    <result column="qty" jdbcType="INTEGER" property="qty"/>
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="brand_id" jdbcType="INTEGER" property="brandId" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="size_id" javaType="INTEGER" property="sizeId" />
+    <result column="color_id" javaType="INTEGER" property="colorId" />
+    <result column="goods_extend_id" javaType="INTEGER" property="goodsExtendId" />
+  </resultMap>
+  <insert id="insertGoods" useGeneratedKeys="true" keyProperty="id" parameterType="com.shoes.scarecrow.persistence.domain.Goods">
     insert into goods
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="userId != null">
+      <if test="userId!=null">
         user_id,
       </if>
-      <if test="price != null">
+      <if test="price!=null">
         price,
       </if>
-      <if test="keyword != null">
+      <if test="keyword!=null">
         keyword,
-      </if>
-      <if test="goodsClass != null">
-        goods_class,
-      </if>
-      <if test="goodsName != null">
+    </if>
+      <if test="goodsClass!=null">
+      goods_class,
+    </if>
+      <if test="goodsName!=null">
         goods_name,
       </if>
-      <if test="goodsDesc != null">
+      <if test="goodsDesc!=null">
         goods_desc,
       </if>
-      <if test="remark != null">
+      <if test="remark!=null">
         remark,
       </if>
-      <if test="brandId != null">
+      <if test="brandId!=null">
         brand_id,
       </if>
-      <if test="sex != null">
+      <if test="sex!=null">
         sex,
       </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="createUser != null">
-        create_user,
-      </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
-      <if test="updateUser != null">
-        update_user,
-      </if>
-      <if test="status != null">
-        status,
-      </if>
-      <if test="yn != null">
-        yn,
-      </if>
-      <if test="version != null">
-        version,
+      <if test="createTime!=null">
+      create_time,
+    </if>
+      <if test="createUser!=null">
+      create_user,
+    </if>
+      <if test="status!=null">
+      status,
+    </if>
+      <if test="yn!=null">
+      yn,
+    </if>
+      <if test="version!=null">
+        version
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
+      <if test="userId!=null">
+        #{userId},
       </if>
-      <if test="userId != null">
-        #{userId,jdbcType=INTEGER},
+      <if test="price!=null">
+        #{price},
       </if>
-      <if test="price != null">
-        #{price,jdbcType=DOUBLE},
+      <if test="keyword!=null">
+        #{keyword},
       </if>
-      <if test="keyword != null">
-        #{keyword,jdbcType=VARCHAR},
+      <if test="goodsClass!=null">
+        #{goodsClass},
       </if>
-      <if test="goodsClass != null">
-        #{goodsClass,jdbcType=INTEGER},
+      <if test="goodsName!=null">
+        #{goodsName},
       </if>
-      <if test="goodsName != null">
-        #{goodsName,jdbcType=VARCHAR},
+      <if test="goodsDesc!=null">
+        #{goodsDesc},
       </if>
-      <if test="goodsDesc != null">
-        #{goodsDesc,jdbcType=VARCHAR},
+      <if test="remark!=null">
+        #{remark},
       </if>
-      <if test="remark != null">
-        #{remark,jdbcType=VARCHAR},
+      <if test="brandId!=null">
+        #{brandId},
       </if>
-      <if test="brandId != null">
-        #{brandId,jdbcType=INTEGER},
+      <if test="sex!=null">
+        #{sex},
       </if>
-      <if test="sex != null">
-        #{sex,jdbcType=INTEGER},
+      <if test="createTime!=null">
+        #{createTime},
       </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
+      <if test="createUser!=null">
+        #{createUser},
       </if>
-      <if test="createUser != null">
-        #{createUser,jdbcType=VARCHAR},
+      <if test="status!=null">
+        #{status},
       </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
+      <if test="yn!=null">
+        #{yn},
       </if>
-      <if test="updateUser != null">
-        #{updateUser,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=INTEGER},
-      </if>
-      <if test="yn != null">
-        #{yn,jdbcType=INTEGER},
-      </if>
-      <if test="version != null">
-        #{version,jdbcType=INTEGER},
+      <if test="version!=null">
+        #{version}
       </if>
     </trim>
   </insert>
   <select id="queryCountByCondition" parameterType="com.shoes.scarecrow.persistence.domain.GoodsCondition" resultType="java.lang.Integer">
-    select count(*) from goods where  1=1
+    select count(*) from goods where  yn=1
     <if test="userId != null">
-      and user_Id=#{userId,jdbcType=INTEGER}
+      and user_id=#{userId,jdbcType=INTEGER}
+    </if>
+    <if test="brandId != null ">
+      and brand_id = #{brandId}
+    </if>
+    <if test="goodsClass != null ">
+      and goods_class = #{goodsClass}
+    </if>
+    <if test="goodsName != null and goodsName != '' ">
+      and goods_name = #{goodsName}
     </if>
   </select>
   <select id="queryByCondition" parameterType="com.shoes.scarecrow.persistence.domain.GoodsCondition" resultMap="BaseResultMap">
-    select * from goods where  1=1
+    <if test="startRow == null and pageSize == null ">
+      select * from goods where yn=1
+      <if test="userId != null ">
+        and user_id = #{userId}
+      </if>
+      <if test="keyword !=null and keyword!='' ">
+        and keyword = #{keyword}
+      </if>
+      <if test="brandId != null ">
+        and brand_id = #{brandId}
+      </if>
+      <if test="goodsClass != null ">
+        and goods_class = #{goodsClass}
+      </if>
+      <if test="goodsName != null and goodsName != '' ">
+        and goods_name = #{goodsName}
+      </if>
+    </if>
+    <if test="startRow !=null and pageSize != null ">
+       select t1.* from
+       (select * from goods where yn=1
+       <if test="userId != null ">
+         and user_id = #{userId}
+       </if>
+       <if test="brandId != null ">
+         and brand_id = #{brandId}
+       </if>
+       <if test="goodsClass != null ">
+         and goods_class = #{goodsClass}
+       </if>
+       <if test="keyword !=null and keyword != '' ">
+         and keyword = #{keyword}
+       </if>
+       <if test="goodsName != null and goodsName != '' ">
+         and goods_name = #{goodsName}
+       </if>
+       )t1 limit #{startRow},#{pageSize}
+     </if>
+  </select>
+
+  <select id="queryCountByBuyerCondition" parameterType="com.shoes.scarecrow.persistence.domain.GoodsCondition" resultType="java.lang.Integer">
+    select count(1) from
+    (select id,user_id,brand_id,goods_class,yn from goods where  yn=1
     <if test="userId != null">
-     and user_Id=#{userId,jdbcType=INTEGER}
-  </if>
-    <if test="goodsClass != null">
-      and goods_class=#{goodsClass,jdbcType=INTEGER}
+      and user_id!=#{userId,jdbcType=INTEGER}
     </if>
-    <if test="keyword != null">
-      and keyword=#{keyword,jdbcType=INTEGER}
+    <if test="brandId != null ">
+      and brand_id = #{brandId}
     </if>
-    <if test="goodsName != null">
-      and goodsName=#{goodsName,jdbcType=INTEGER}
+    <if test="goodsClass != null ">
+      and goods_class = #{goodsClass}
+    </if>) t1,(select goods_id,share_flag,qty,user_id from stock where user_id!=#{userId} and share_flag =1 )t2,(select extend_id, good_id,size_id,color_id from good_extend )t3
+    where t1.id = t2.goods_id and t1.id = t3.good_id
+    <if test="sizeId != null and sizeId != '' ">
+      and t3.size_id = #{sizeId}
     </if>
-    <if test="brandId != null">
-      and brand_id=#{brandId,jdbcType=INTEGER}
+    <if test="colorId != null and colorId != '' ">
+      and t3.color_id = #{colorId}
     </if>
   </select>
+  <select id="queryByBuyerCondition" parameterType="com.shoes.scarecrow.persistence.domain.GoodsCondition" resultMap="GoodsDetailMap">
+    <if test="startRow == null and pageSize == null ">
+      select t1.id,t1.user_id,t1.price,t1.keyword,t1.goods_class,t1.goods_name,t1.goods_desc,t2.qty,t1.remark,t1.brand_id,t1.sex,t1.status,t3.extend_id as goods_extend_id,t3.size_id,t3.color_id from
+      (select id,user_id,price,keyword,goods_class,goods_name,goods_desc,remark,brand_id,sex,status,yn from goods where  yn=1
+      <if test="userId != null">
+        and user_id!=#{userId,jdbcType=INTEGER}
+      </if>
+      <if test="brandId != null ">
+        and brand_id = #{brandId}
+      </if>
+      <if test="goodsClass != null ">
+        and goods_class = #{goodsClass}
+      </if>) t1,(select goods_id,share_flag,qty,user_id from stock where user_id!=#{userId} and share_flag =1 )t2,(select extend_id,good_id,size_id,color_id from good_extend )t3
+      where t1.id = t2.goods_id and t1.id = t3.good_id
+      <if test="sizeId != null and sizeId != '' ">
+        and t3.size_id = #{sizeId}
+      </if>
+      <if test="colorId != null and colorId != '' ">
+        and t3.color_id = #{colorId}
+      </if>
+    </if>
+    <if test="startRow !=null and pageSize != null ">
+      select t4.* from
+      (select t1.id,t1.user_id,t1.price,t1.keyword,t1.goods_class,t1.goods_name,t1.goods_desc,t2.qty,t1.remark,t1.brand_id,t1.sex,t1.status,t3.extend_id as goods_extend_id,t3.size_id,t3.color_id from
+      (select id,user_id,price,keyword,goods_class,goods_name,goods_desc,remark,brand_id,sex,status,yn from goods where  yn=1
+      <if test="userId != null">
+        and user_id!=#{userId,jdbcType=INTEGER}
+      </if>
+      <if test="brandId != null ">
+        and brand_id = #{brandId}
+      </if>
+      <if test="goodsClass != null ">
+        and goods_class = #{goodsClass}
+      </if>) t1,(select goods_id,share_flag,qty,user_id from stock where user_id!=#{userId} and share_flag =1 )t2,(select extend_id, good_id,size_id,color_id from good_extend )t3
+      where t1.id = t2.goods_id and t1.id = t3.good_id
+      <if test="sizeId != null and sizeId != '' ">
+        and t3.size_id = #{sizeId}
+      </if>
+      <if test="colorId != null and colorId != '' ">
+        and t3.color_id = #{colorId}
+      </if>
+      )t4 limit #{startRow},#{pageSize}
+    </if>
+  </select>
+
+  <update id="delByUserIdAndId" parameterType="com.shoes.scarecrow.persistence.domain.Goods">
+    update goods
+     <set>
+       <if test="yn != null">
+         yn = #{yn},
+       </if>
+       <if test="updateTime != null">
+         update_time = #{updateTime},
+       </if>
+       <if test="updateUser != null">
+         update_user = #{updateUser}
+       </if>
+     </set>
+     where id = #{id} and user_id = #{userId}
+  </update>
+  <update id="update" parameterType="com.shoes.scarecrow.persistence.domain.Goods">
+    update goods
+    <set>
+      <if test="price != null">
+        price = #{price},
+      </if>
+      <if test="keyword !=null ">
+        keyword = #{keyword},
+      </if>
+      <if test="goodsClass != null">
+        goods_class = #{goodsClass},
+      </if>
+      <if test="goodsName != null">
+        goods_name = #{goodsName},
+      </if>
+      <if test="goodsDesc != null">
+      goods_desc = #{goodsDesc},
+      </if>
+      <if test="remark != null">
+        remark = #{remark},
+      </if>
+      <if test="brandId != null">
+       brand_id = #{brandId},
+      </if>
+      <if test="sex != null">
+        sex = #{sex},
+       </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser},
+      </if>
+      <if test="status!=null">
+        status = #{status}
+      </if>
+    </set>
+    where id = #{id} and user_id = #{userId}
+  </update>
 </mapper>

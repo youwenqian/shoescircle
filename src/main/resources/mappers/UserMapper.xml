@@ -41,12 +41,66 @@
       #{remark,jdbcType=VARCHAR}, #{yn,jdbcType=TINYINT}, #{status,jdbcType=INTEGER})
   </insert>
   <select id="getUserByNameAndPassword" resultMap="BaseResultMap" >
-    select * from user where user_name=#{userName} and password=#{passWord}
+    select * from user where user_name=#{userName} and password=#{passWord} and user_type=#{userType}
   </select>
 
-  <select id="queryById" parameterType="java.lang.Integer">
-    select * from brand where id=#{id,jdbcType=INTEGER}
+  <select id="queryById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select * from user where id=#{id,jdbcType=INTEGER}
   </select>
+  <update id="updateUserById" parameterType="com.shoes.scarecrow.persistence.domain.User">
+     update user
+     <set>
+       <if test="userName !=null ">
+         user_name=#{userName,jdbcType=VARCHAR},
+       </if>
+       <if test="nickName !=null ">
+         nick_name=#{nickName,jdbcType=VARCHAR},
+       </if>
+       <if test="birthday !=null ">
+         birthday=#{birthday,jdbcType=DATE},
+       </if>
+       <if test="isPayment !=null ">
+         is_payment=#{isPayment,jdbcType=INTEGER},
+       </if>
+       <if test="sex !=null">
+         sex=#{sex,jdbcType=TINYINT},
+       </if>
+       <if test="userType !=null ">
+         user_type=#{userType,jdbcType=INTEGER},
+       </if>
+       <if test="phoneNo !=null ">
+         phone_no=#{phoneNo,jdbcType=VARCHAR},
+       </if>
+       <if test="address !=null ">
+         address=#{address,jdbcType=VARCHAR},
+       </if>
+       <if test="stockId !=null ">
+         stock_id=#{stockId,jdbcType=INTEGER},
+       </if>
+       <if test="taobaoName !=null ">
+         taobao_name=#{taobaoName,jdbcType=VARCHAR},
+       </if>
+       <if test="imageAddress !=null ">
+         image_address=#{imageAddress,jdbcType=VARCHAR},
+       </if>
+       <if test="password !=null ">
+         password=#{password,jdbcType=VARCHAR},
+       </if>
+       <if test="confirmPassword !=null ">
+         confirm_password=#{confirmPassword,jdbcType=VARCHAR},
+       </if>
+       <if test="updateTime !=null ">
+         update_time=#{updateTime,jdbcType=TIMESTAMP},
+       </if>
+       <if test="updateUser !=null ">
+         update_user=#{updateUser,jdbcType=VARCHAR},
+       </if>
+       <if test="remark !=null ">
+         remark = #{remark,jdbcType=VARCHAR}
+       </if>
+     </set>
+    where id=#{id}
+  </update>
   <select id="queryCountByCondition" parameterType="com.shoes.scarecrow.persistence.domain.UserCondition" resultType="java.lang.Integer">
     select count(*) from user where 1=1
     <if test="userName != null">
@@ -63,20 +117,43 @@
   </if>
   </select>
   <select id="queryByCondition" parameterType="com.shoes.scarecrow.persistence.domain.UserCondition" resultMap="BaseResultMap">
-    select t.* from
-    (select * from user  where 1=1
-    <if test="userName != null">
-      and user_name = #{userName,jdbcType= INTEGER}
+    <if test="startRow!=null and pageSize!=null">
+      select t.* from
+      (select * from user  where 1=1
+      <if test="userName != null">
+        and user_name = #{userName,jdbcType= INTEGER}
+      </if>
+      <if test="nickName != null">
+        and nick_name = #{nickName,jdbcType= VARCHAR}
+      </if>
+      <if test="taobaoName != null">
+        and taobao_name = #{taobaoName,jdbcType= VARCHAR}
+      </if>
+      <if test="confirmPassword!=null and confirmPassword!=''">
+        and confirm_password = #{confirmPassword}
+      </if>
+      <if test="stockId != null">
+        and stock_id = #{stockId,jdbcType= VARCHAR}
+      </if>)t limit #{startRow},#{pageSize}
     </if>
-    <if test="nickName != null">
-      and nick_name = #{nickName,jdbcType= VARCHAR}
+    <if test="startRow==null and pageSize==null">
+      select * from user  where 1=1
+      <if test="userName != null">
+        and user_name = #{userName,jdbcType= INTEGER}
+      </if>
+      <if test="nickName != null">
+        and nick_name = #{nickName,jdbcType= VARCHAR}
+      </if>
+      <if test="taobaoName != null">
+        and taobao_name = #{taobaoName,jdbcType= VARCHAR}
+      </if>
+      <if test="confirmPassword!=null and confirmPassword!=''">
+        and confirm_password = #{confirmPassword}
+      </if>
+      <if test="stockId != null">
+        and stock_id = #{stockId,jdbcType= VARCHAR}
+      </if>
     </if>
-    <if test="taobaoName != null">
-      and taobao_name = #{taobaoName,jdbcType= VARCHAR}
-    </if>
-    <if test="stockId != null">
-      and stock_id = #{stockId,jdbcType= VARCHAR}
-    </if>)t limit #{startRow},#{pageSize}
   </select>
   <select id="queryByUserName" resultMap="BaseResultMap">
     select * from user where 1=1

@@ -1,5 +1,6 @@
 package com.shoes.scarecrow.web.controller;
 
+import com.shoes.scarecrow.common.utils.MD5;
 import com.shoes.scarecrow.persistence.domain.User;
 import com.shoes.scarecrow.persistence.service.UserService;
 import com.shoes.scarecrow.web.model.Stock;
@@ -106,14 +107,21 @@ public class RegisterController {
         user.setUpdateTime(new Date());
         user.setCreateUser(user.getUserName());
         user.setUpdateUser(user.getUserName());
+        user.setPassword(MD5.excute(user.getPassword()));
+        user.setConfirmPassword(MD5.excute(user.getConfirmPassword()));
         byte yn = 0;
         user.setYn(yn);
         user.setStatus(1);
-        userService.saveUser(user);
-        map.put("code","true");
-        String path = session.getServletContext().getRealPath("/WEB-INF/classes/images/weixin");
-        String imageFile = path.substring(path.lastIndexOf("WEB-INF")) + "webwxgetmsgimg.jpeg";
-        map.put("imageUrl",imageFile);
+        User checkUser = userService.queryByUserName(user.getUserName());
+        if(checkUser!=null){
+            map.put("code","false");
+        }else {
+            int n = userService.saveUser(user);
+            map.put("code","true");
+            String path = session.getServletContext().getRealPath("/WEB-INF/classes/images/weixin");
+            String imageFile = path.substring(path.lastIndexOf("WEB-INF")) + "webwxgetmsgimg.jpeg";
+            map.put("imageUrl",imageFile);
+        }
         return map;
     }
 }

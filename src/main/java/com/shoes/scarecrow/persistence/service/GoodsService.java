@@ -1,10 +1,14 @@
 package com.shoes.scarecrow.persistence.service;
 
+import com.shoes.scarecrow.persistence.domain.GoodExtend;
 import com.shoes.scarecrow.persistence.domain.Goods;
 import com.shoes.scarecrow.persistence.domain.GoodsCondition;
+import com.shoes.scarecrow.persistence.domain.GoodsDetail;
 import com.shoes.scarecrow.persistence.mappers.GoodsMapper;
+import com.shoes.scarecrow.persistence.mappers.GoodsExtendMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,11 +24,8 @@ public class GoodsService {
     protected GoodsMapper goodsMapper;
 
     public int saveGoods(Goods goods){
-        return goodsMapper.insert(goods);
-    }
-
-    public int saveGoods(Goods goods,Integer goodsSize){
-        return goodsMapper.insert(goods);
+        int n = goodsMapper.insertGoods(goods);
+        return n;
     }
 
     public List<Goods> queryByCondition(GoodsCondition condition){
@@ -43,8 +44,15 @@ public class GoodsService {
         return goodsMapper.update(record);
     }
 
-    public int delBrand(int id){
-        return goodsMapper.delById(id);
+    public int deleteByUserIdAndId(Goods goods){
+        return goodsMapper.delByUserIdAndId(goods);
     }
 
+    public int queryCountByBuyerCondition(GoodsCondition goodsCondition) {
+        return goodsMapper.queryCountByBuyerCondition(goodsCondition);
+    }
+
+    public List<GoodsDetail> queryByBuyerCondition(GoodsCondition goodsCondition) {
+        return goodsMapper.queryByBuyerCondition(goodsCondition);
+    }
 }

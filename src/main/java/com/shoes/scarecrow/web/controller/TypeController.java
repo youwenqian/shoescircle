@@ -45,24 +45,9 @@ public class TypeController {
         int start = (page-1)*limit;
         condition.setStartRow(start);
         List<ShoesType> list = typeService.queryByCondition(condition);
-//        list = new ArrayList<>();
-//        for(int i=0;i<50;i++){
-//            Type type = new Type();
-//            type.setId(i);
-//            type.setName("分组"+i);
-//            type.setCreateUser("创建人"+i);
-//            type.setCreateTime(new Date());
-//            type.setUpdateUser("更新人"+i);
-//            type.setUpdateTime(new Date());
-//            type.setRemark("备注"+i);
-//            list.add(type);
-//        }
         map.put("code","0");
         map.put("msg","");
         map.put("count",50);
-//        start = (page-1)*limit;
-//        int end = page*limit<=list.type()?page*limit:list.type();
-//        List<Type> list2 = list.subList(start,end);
         map.put("data",list);
         try {
             log.info(session.getAttribute("userName")+"退出分页获取分组信息的方法，result="+mapper.writeValueAsString(map));

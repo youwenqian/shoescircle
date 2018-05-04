@@ -20,6 +20,34 @@
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="yn" jdbcType="INTEGER" property="yn" />
   </resultMap>
+  <resultMap id="DetailResultMap" type="com.shoes.scarecrow.persistence.domain.StockDetail">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
+    <result column="goods_id" jdbcType="INTEGER" property="goodsId" />
+    <result column="goods_name" jdbcType="INTEGER" property="goodsName" />
+    <result column="goods_extend_id" jdbcType="INTEGER" property="goodsExtendId" />
+    <result column="size_id" jdbcType="INTEGER" property="sizeId" />
+    <result column="size_Name" jdbcType="INTEGER" property="sizeName" />
+    <result column="color_id" jdbcType="INTEGER" property="colorId" />
+    <result column="color_name" jdbcType="INTEGER" property="colorName" />
+    <result column="into_price" jdbcType="DOUBLE" property="intoPrice" />
+    <result column="qty" jdbcType="INTEGER" property="qty" />
+    <result column="storage_time" jdbcType="TIMESTAMP" property="storageTime" />
+    <result column="share_flag" jdbcType="INTEGER" property="shareFlag" />
+    <result column="store_address" jdbcType="VARCHAR" property="storeAddress" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="yn" jdbcType="INTEGER" property="yn" />
+  </resultMap>
+  <resultMap id="DayMoneyMap" type="com.shoes.scarecrow.persistence.domain.DayMoney">
+    <result column="createTime" jdbcType="VARCHAR" property="createTime"></result>
+    <result column="total" jdbcType="INTEGER" property="total"></result>
+  </resultMap>
   <insert id="insert" parameterType="com.shoes.scarecrow.persistence.domain.Stock">
     insert into stock (id, user_id, batch_no, 
       goods_id, goods_extend_id, into_price, 
@@ -34,6 +62,129 @@
       #{createUser,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER}, #{yn,jdbcType=INTEGER})
   </insert>
+  <select id="getDetailCountByCondition" parameterType="com.shoes.scarecrow.persistence.domain.StockCondition" resultType="java.lang.Integer">
+    select count(id) from
+    (select t1.id,t1.user_id,t1.batch_no,t1.goods_id,t2.goods_name,t1.goods_extend_id,t3.size_id,t5.size_name,t3.color_id,t4.color_name,
+            t1.into_price,t1.qty,t1.storage_time,t1.share_flag,t1.store_address,t1.remark,t1.create_time,t1.create_user,t1.update_time,t1.update_user,t1.status,t1.yn FROM
+    (select id,user_id,batch_no,goods_id,goods_extend_id,into_price,qty,storage_time,share_flag,store_address,remark,
+            create_time,create_user,update_time,update_user,status,yn from stock where yn=1 and status=1 and user_id=#{userId})t1,
+    (select id,goods_name from goods where user_id = #{userId}
+            <if test="goodsName!=null and goodsName!='' ">
+              and goods_name=#{goodsName}
+            </if>
+    )t2,
+    (select extend_id,size_id,color_id,good_id from good_extend )t3,
+    (select id,name as color_name from color)t4,
+    (select id,name as size_name from size)t5
+    where t1.goods_id = t2.id and t1.goods_extend_id = t3.extend_id and t2.id = t3.good_id and t3.color_id = t4.id and t3.size_id = t5.id)t6
+  </select>
+  <select id="getDetailByCondition" parameterType="com.shoes.scarecrow.persistence.domain.StockCondition" resultMap="DetailResultMap">
+    <if test="page == null and pageSize == null">
+      select t1.id,t1.user_id,t1.batch_no,t1.goods_id,t2.goods_name,t1.goods_extend_id,t3.size_id,t5.size_name,t3.color_id,t4.color_name,
+        t1.into_price,t1.qty,t1.storage_time,t1.share_flag,t1.store_address,t1.remark,t1.create_time,t1.create_user,t1.update_time,t1.update_user,t1.status,t1.yn FROM
+      (select id,user_id,batch_no,goods_id,goods_extend_id,into_price,qty,storage_time,share_flag,store_address,remark,
+              create_time,create_user,update_time,update_user,status,yn from stock where yn=1 and status=1 and user_id=#{userId})t1,
+      (select id,goods_name from goods where user_id = #{userId}
+              <if test="goodsName!=null and goodsName!='' ">
+                 and goods_name=#{goodsName}
+              </if>
+      )t2,
+      (select extend_id,size_id,color_id,good_id from good_extend )t3,
+      (select id,name as color_name from color)t4,
+      (select id,name as size_name from size)t5
+      where t1.goods_id = t2.id and t1.goods_extend_id = t3.extend_id and t2.id = t3.good_id and t3.color_id = t4.id and t3.size_id = t5.id
+    </if>
+    <if test="page != null and pageSize != null">
+      select t1.id,t1.user_id,t1.batch_no,t1.goods_id,t2.goods_name,t1.goods_extend_id,t3.size_id,t5.size_name,t3.color_id,t4.color_name,
+             t1.into_price,t1.qty,t1.storage_time,t1.share_flag,t1.store_address,t1.remark,t1.create_time,t1.create_user,t1.update_time,t1.update_user,t1.status,t1.yn FROM
+      (select t1.id,user_id,batch_no,goods_id,goods_name,goods_extend_id,size_id,size_name,color_id,color_name,into_price,qty,storage_time,
+              share_flag,store_address,remark,create_time,create_user,update_time,update_user,status,yn FROM
+      (select id,user_id,batch_no,goods_id,goods_extend_id,into_price,qty,storage_time,share_flag,store_address,remark,
+              create_time,create_user,update_time,update_user,status,yn from stock where yn=1 and user_id=#{userId})t1,
+      (select id,goods_name from goods where user_id = #{userId}
+              <if test="goodsName!=null and goodsName!='' ">
+                and goods_name=#{goodsName}
+              </if>
+      )t2,
+      (select extend_id,size_id,color_id,good_id from good_extend )t3,
+      (select id,name as color_name from color)t4,
+      (select id,name as size_name from size)t5
+      where t1.goods_id = t2.id and t1.goods_extend_id = t3.extend_id and t2.id = t3.good_id and t3.color_id = t4.id and t3.size_id = t5.id) limit #{startRow},#{pageSize}
+    </if>
+  </select>
+  <select id="getSevenInStock" resultMap="DayMoneyMap">
+    select date_format(create_time,'%m-%d') as 'createTime',sum(into_price*num) as 'total' from
+    (select t1.create_time,t1.into_price,case when t2.num!=null then t1.qty+t2.num else t1.qty end num from
+    (select id,into_price,qty,create_time from scarecrow.stock where date(create_time) &lt; curdate() and date(create_time) &gt;= date_sub(curdate(),interval #{days} day) and user_id =#{userId})t1 left join
+    (select stock_id,sum(num)as num from scarecrow.stock_flow where date(create_time) &lt; curdate() and date(create_time) &gt;= date_sub(curdate(),interval #{days} day) and user_id=#{userId} group by stock_id)t2
+    on t1.id=t2.stock_id)t3 group by date_format(create_time,'%m-%d')
+  </select>
+    <select id="getStockTodayPrice" resultType="java.lang.Integer">
+     select total from (
+     select date_format(create_time,'%m-%d') as 'createTime',sum(into_price*num) as 'total' from
+    (select t1.create_time,t1.into_price,case when t2.num!=null then t1.qty+t2.num else t1.qty end num from
+    (select id,into_price,qty,create_time from scarecrow.stock where date_format(create_time,'%y-%m-%d')=curdate() and user_id =#{userId})t1 left join
+    (select stock_id,sum(num)as num from scarecrow.stock_flow where date_format(create_time,'%y-%m-%d')=curdate() and user_id=#{userId} group by stock_id)t2
+    on t1.id=t2.stock_id)t3 group by date_format(create_time,'%m-%d')
+     )ttt
+    </select>
+  <update id="updateStock" parameterType="com.shoes.scarecrow.persistence.domain.Stock">
+    update stock
+    <set>
+      <if test="batchNo !=null and batchNo !='' ">
+        batch_no = #{batchNo},
+      </if>
+      <if test="goodsId !=null and goodsId !='' ">
+        goods_id = #{goodsId},
+      </if>
+      <if test="goodsExtendId !=null and goodsExtendId !='' ">
+        goods_extend_id = #{goodsExtendId},
+      </if>
+      <if test="intoPrice !=null and intoPrice !='' ">
+        into_price = #{intoPrice},
+      </if>
+      <if test="qty !=null and qty !='' ">
+        qty = #{qty},
+      </if>
+      <if test="storageTime !=null and storageTime !='' ">
+        storage_time = #{storageTime},
+      </if>
+      <if test="shareFlag !=null and shareFlag !='' ">
+        share_flag = #{shareFlag},
+      </if>
+      <if test="storeAddress !=null and storeAddress !='' ">
+        store_address = #{storeAddress},
+      </if>
+      <if test="updateUser !=null and updateUser !='' ">
+        update_user = #{updateUser},
+      </if>
+      <if test="updateTime !=null and updateTime !='' ">
+        update_time = #{updateTime},
+      </if>
+      <if test="remark !=null and remark !='' ">
+        remark = #{remark},
+      </if>
+      <if test="status !=null and status !='' ">
+        status = #{status}
+      </if>
+    </set>
+    where id=#{id}
+  </update>
+  <update id="deleteByUserIdAndId" parameterType="com.shoes.scarecrow.persistence.domain.Stock">
+    update stock
+    <set>
+      <if test="yn != null">
+        yn = #{yn},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser}
+      </if>
+    </set>
+     where id=#{id} and user_id=#{userId}
+  </update>
   <insert id="insertSelective" parameterType="com.shoes.scarecrow.persistence.domain.Stock">
     insert into stock
     <trim prefix="(" suffix=")" suffixOverrides=",">

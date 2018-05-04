@@ -20,15 +20,26 @@
     </if>
   </select>
   <select id="queryByCondition" parameterType="com.shoes.scarecrow.persistence.domain.TypeCondition" resultMap="BaseResultMap">
-    select t.* from
-    (select * from shoes_type where 1=1
-    <if test="id !=null">
-      and id = #{id,jdbcType=INTEGER}
+    <if test="startRow == null and pageSize == null">
+       select * from shoes_type where 1=1
+      <if test="id !=null">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="typeName !=null">
+        and type_name = #{typeName,jdbcType=VARCHAR}
+      </if>
     </if>
-    <if test="typeName !=null">
-      and type_name = #{typeName,jdbcType=VARCHAR}
+    <if test="startRow != null and pageSize != null">
+      select t.* from
+      (select * from shoes_type where 1=1
+      <if test="id !=null">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="typeName !=null">
+        and type_name = #{typeName,jdbcType=VARCHAR}
+      </if>
+      )t limit #{startRow},#{pageSize}
     </if>
-    )t limit #{startRow},#{pageSize}
   </select>
 
   <select id="queryById" parameterType="java.lang.Integer">

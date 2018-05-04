@@ -1,12 +1,17 @@
 package com.shoes.scarecrow.persistence.domain;
 
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
+/**
+ * Create with IntelliJ IDEA
+ * Create by zz
+ * Date 18-5-3
+ * Time 下午11:37
+ */
 @Data
-public class Stock {
+public class StockDetail {
     private Integer id;
 
     private Integer userId;
@@ -15,13 +20,22 @@ public class Stock {
 
     private Integer goodsId;
 
+    private String goodsName;
+
     private Integer goodsExtendId;
+
+    private Integer sizeId;
+
+    private String sizeName;
+
+    private Integer colorId;
+
+    private String colorName;
 
     private Double intoPrice;
 
     private Integer qty;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date storageTime;
 
     private Integer shareFlag;
@@ -41,5 +55,4 @@ public class Stock {
     private Integer status;
 
     private Integer yn;
-
 }

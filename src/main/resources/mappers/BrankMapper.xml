@@ -35,6 +35,11 @@
       and name = #{name,jdbcType= VARCHAR}
     </if>
   </select>
+
+    <select id="queryAll" resultMap="BaseResultMap">
+        select * from brand where yn=1
+    </select>
+
   <select id="queryByCondition" parameterType="com.shoes.scarecrow.persistence.domain.BrandCondition" resultMap="BaseResultMap">
     select t.* from
        (select * from brand  where 1=1

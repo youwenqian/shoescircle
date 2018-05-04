@@ -34,6 +34,8 @@ public class BrandService {
         return brandMapper.queryCountByCondition(condition);
     }
 
+    public List<Brand> queryAllBrand(){ return brandMapper.queryAll();}
+
     public Brand queryById(int id){
         return brandMapper.queryById(id);
     }

@@ -17,6 +17,7 @@ public class Order implements Serializable {
     private Integer buyerId;
     private Integer sellerId;
     private Integer goodsId;
+    private Integer goodsExtendId;
     private Integer qty;
     private String remark;
     private Date createTime;

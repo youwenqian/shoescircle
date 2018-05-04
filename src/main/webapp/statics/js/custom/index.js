@@ -46,6 +46,8 @@ $('#login-button').click(function (event) {
                 $('.container h1 > span').css('opacity','1');
                 $('.container h1 > span i').css('animation-play-state','running');
                 window.location.href = "index/main";
+            }else{
+                layer.msg(data.message,{icon:5,time:2000});
             }
         },
         error: function(data){

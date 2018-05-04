@@ -35,7 +35,7 @@
 <body class="layui-layout-body">
 <form class="layui-form layui-form-pane" id="search-goods-form" style="padding: 5px;">
     <div class="layui-form-item">
-        <div class="col-lg-3">
+        <div class="col-md-3">
             <label class="layui-form-label">品牌</label>
             <div class="layui-input-block">
                 <select name="brandId" id="goodsBrandSearch" lay-filter="brandIdSearchFilter" lay-search="" style="width:200px;">
@@ -43,15 +43,15 @@
                 </select>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-md-2">
             <label class="layui-form-label">尺码</label>
             <div class="layui-input-block">
-                <select name="goodsSize" id="goodsSizeSearch" lay-filter="goodsSizeSearchFilter" lay-search="" style="width:200px;">
+                <select name="sizeId" id="goodsSizeSearch" lay-filter="goodsSizeSearchFilter" lay-search="" style="width:200px;">
                     <option value="">请选择</option>
                 </select>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-md-3">
             <label class="layui-form-label">分类</label>
             <div class="layui-input-block">
                 <select name="goodsClass" id="goodsTypeSearch" lay-filter="goodsClassSearchFilter" lay-search="" style="width:200px;">
@@ -59,7 +59,15 @@
                 </select>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-md-2">
+            <label class="layui-form-label">颜色</label>
+            <div class="layui-input-block">
+                <select name="sizeId" id="goodsColorSearch" lay-filter="goodsColorSearchFilter" lay-search="" style="width:200px;">
+                    <option value="">请选择</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2">
             <button type="button" id="search-button" onclick="searchGoods()" class="btn btn-default">查找</button>
         </div>
     </div>
@@ -69,7 +77,11 @@
     <div class = "form-group">
         <input type="text" name="goodsId" id="idEdit" hidden>
         <input type="text" name="sellerId" id="userIdEdit" hidden>
-        <input type="text" name="buyerId" id="buyerIdEdit" value="<%=userId%>" hidden>
+        <input type="text" name="goodsExtendId" id="goodsExtendIdEdit" hidden>
+        <input type="text" name="stockNum" id="stockNumEdit" hidden>
+        <input type="text" name="colorId" id="colorIdEdit" hidden>
+        <input type="text" name="sellerId" id="sizeIdEdit" hidden>
+        <input type="text" name="sizeId" id="buyerIdEdit" value="<%=userId%>" hidden>
     </div>
     <div class = "form-group">
         <label id="info" class="col-sm-8 control-label"></label>
@@ -81,7 +93,7 @@
     <div class="form-group">
         <label for="remarkEdit" class="col-sm-2 control-label">留言</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" id="remarkEdit" name="remark" placeholder="备注信息">
+            <input type="text" class="form-control" id="remarkEdit" required name="remark" placeholder="填写卖家联系你的联系方式等信息">
         </div>
     </div>
     <div class="form-group">
