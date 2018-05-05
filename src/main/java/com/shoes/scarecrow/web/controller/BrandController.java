@@ -33,6 +33,7 @@ public class BrandController {
     private BrandService brandService;
     @RequestMapping("/allDetail")
     public void getBrandDetailByPage(int page, int limit,String name, HttpSession session, HttpServletResponse response){
+        limit = limit<0?10:limit;
         log.info(session.getAttribute("userName")+"进入到分页获取品牌信息的方法，limit="+limit+",page="+page);
         Map<String,Object> map = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();

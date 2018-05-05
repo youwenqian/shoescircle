@@ -35,6 +35,7 @@ public class GoodsController {
     @RequestMapping("/allDetail")
     @ResponseBody
     public Map<String, Object> getBrandDetailByPage(int page, int limit, HttpSession session, HttpServletResponse response) {
+        limit = limit<0?10:limit;
         log.info(session.getAttribute("userName") + "进入到分页获取商品信息的方法，limit=" + limit + ",page=" + page);
         Map<String,Object> map = new HashMap<>();
         GoodsCondition goodsCondition = new GoodsCondition();
@@ -177,6 +178,7 @@ public class GoodsController {
     @RequestMapping("/getGoods")
     @ResponseBody
     public Map getGoods(int page, int limit, GoodsCondition goodsCondition,String goodsSize,HttpSession session){
+        limit = limit<0?10:limit;
         Map<String,Object> map = new HashMap<>();
         ObjectMapper objMapper = new ObjectMapper();
         try {
@@ -210,6 +212,7 @@ public class GoodsController {
     @RequestMapping("/getOthersGoods")
     @ResponseBody
     public Map getOhtersGoods(int page,int limit,GoodsCondition goodsCondition,HttpSession session){
+        limit = limit<0?10:limit;
         Map<String,Object> map = new HashMap<>();
         ObjectMapper objMapper = new ObjectMapper();
         try {

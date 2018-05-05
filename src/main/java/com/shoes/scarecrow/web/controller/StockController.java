@@ -37,6 +37,7 @@ public class StockController {
     @RequestMapping("/getStockDetail")
     @ResponseBody
     public Map getStockDetailByPage(int page, int limit, StockCondition condition, HttpSession session) {
+        limit = limit<0?10:limit;
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             log.info(session.getAttribute("userName") + "进入查询库存方法,page=" + page + " ,limit=" + limit + " " + objectMapper.writeValueAsString(condition));

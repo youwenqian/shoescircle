@@ -104,9 +104,9 @@
  where t1.buyer_id=t7.id and t1.goods_id=t2.id and t1.goods_extend_id = t8.extend_id and t2.brand_id=t4.id and t2.goods_class=t3.id and t8.color_id = t5.id and t8.size_id =t6.id
   </select>
   <update id="updateOrderById" parameterType="com.shoes.scarecrow.persistence.domain.Order">
-    update order set status=1 where yn=1 and id=#{id}
+    update scarecrow.order set status=1 where yn=1 and id=#{id}
   </update>
   <update id="deleteOrderById">
-    update order set yn = 0 where id=#{id}
+    update scarecrow.order set yn = 0 where id=#{id}
   </update>
 </mapper>

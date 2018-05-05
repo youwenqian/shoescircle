@@ -30,6 +30,7 @@ public class LoginFilter implements Filter{
         request.setCharacterEncoding("utf-8");
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         response.setCharacterEncoding("utf-8");
+        response.setHeader("content-Type","text/plain");
         HttpSession session = request.getSession();
         String loginUserName = (String)session.getAttribute("userName");
         if (uri.length()<=1||uri.contains("css")||uri.contains("js")||uri.contains("image")||uri.contains(".jpg")||uri.contains(".png")||uri.contains("index")||uri.contains("register")) {

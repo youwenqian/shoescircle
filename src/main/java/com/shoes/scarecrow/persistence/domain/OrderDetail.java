@@ -20,6 +20,7 @@ public class OrderDetail implements Serializable {
     private String brandName;
     private String colorName;
     private String sizeName;
+    private Integer qty;
     private Date createTime;
     private String remark;
 }

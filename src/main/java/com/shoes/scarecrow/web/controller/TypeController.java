@@ -31,6 +31,7 @@ public class TypeController {
     private TypeService typeService;
     @RequestMapping("/allDetail")
     public void getAllTypeDetailByPage(int page, int limit,String typeName, HttpSession session, HttpServletResponse response){
+        limit = limit<0?10:limit;
         log.info(session.getAttribute("userName")+"进入到分页获取分组信息的方法，limit="+limit+",page="+page+",name="+typeName);
         Map<String,Object> map = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();

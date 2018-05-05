@@ -34,8 +34,8 @@
     <div class="layui-header">
         <div class="layui-logo">shoes circle</div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
-        <div id = "userName" style="padding-left:20px;width: 50%; height: 40px; text-align: left; float: left; color:#999;"><span>欢迎：${userName}</span></div>
-        <div style="" id="notes" >
+        <div id = "userName" style="padding-left:20px;width: 10%; height: 40px; text-align: left; float: left; color:#999;"><span>欢迎：${userName}</span></div>
+        <div style="height: 100%" id="notes" >
 
         </div>
         <div class="layui-nav layui-layout-right" ><a style="padding-right:30px; color:#999;" href="#" onclick="changePassword()">修改密码</a> <a style=" color:#999;" href="<%=basePath%>index/logout">退出登录</a></div>
@@ -106,64 +106,65 @@
         var path = "<%=request.getParameter("path")%>";
         console.log(path);
         document.getElementById(path).click();
-        function queryOrders() {
-            $.ajax({
-                type: "POST",
-                url: "/shoes/order/getOrders",
-                dataType:"json",
-                async:false,
-                contentType: "application/json",
-                success: function (data) {
-                    orders = data.data;
-                    for(var i=0;i<orders.length;i++){
-                        var html1 = "<div orderId='"+orders[i].id+"' style='display:none;'>"+orders[i].userName+" 用户求购 "+orders[i].goodsName+" 尺码为:"+orders[i].sizeName+ ",颜色为:"+orders[i].colorName+",备注:"+orders.remark+"</div>"
-                        $("#notes").append(html1);
-                    }
-                    orderDivs = $("div[orderId]");
-                    for(var i=i;i<orderDivs.length;i++){
-                        $(orderDivs[i]).mousedown(function(){
-                            $.ajax({
-                                type: "POST",
-                                url: "/shoes/order/updateOrder?id="+$(this).attr("orderId"),
-                                dataType:"json",
-                                async:false,
-                                contentType: "application/json",
-                                success: function (data) {
-                                    if(data.flag){
-                                        layer.msg("订单处理成功，请尽快出库！", {icon: 1,time:2000});
-                                        $(orderDivs[i]).remove();
-                                        orderDivs = $("div[orderId]");
-                                    }else{
-                                        layer.msg("订单处理失败，请联系管理员！",{icon:5,time:2000});
-                                    }
-                                }
-                            });
-                        });
-                    }
+    });
+    function queryOrders() {
+        $.ajax({
+            type: "POST",
+            url: "/shoes/order/getOrders",
+            dataType:"json",
+            async:false,
+            contentType: "application/json",
+            success: function (data) {
+                orders = data.data;
+                console.log(1);
+                for(var i=0;i<orders.length;i++){
+                    var html1 = "<div orderId='"+orders[i].id+"' style='display:none;height: 100%;color:#999;text-align: center;cursor:pointer;' onclick='dealBill(this)'>"+orders[i].userName+" 用户求购 "+orders[i].goodsName+" 尺码为:"+orders[i].sizeName+ ",颜色为:"+orders[i].colorName+",数量为："+orders[i].qty+",备注:"+orders[i].remark+"</div>"
+                    $("#notes").append(html1);
                 }
-            });
+                orderDivs = $("div[orderId]");
+            }
+        });
+    }
+    queryInterval = setInterval(queryOrders(), 1000*60*15);//15分钟查询一次，没处理的订单
+    var showIndex = 0;
+    showInterval = setInterval(function () {
+        console.log(3);
+        if(orderDivs.length>0){
+            if(showIndex==0){
+                $(orderDivs[showIndex]).fadeIn();
+            }else if(showIndex==orderDivs.length-1){
+                $(orderDivs[showIndex-1]).fadeOut();
+                $(orderDivs[showIndex]).fadeIn();
+                showIndex= 0;
+            }else{
+                $(orderDivs[showIndex-1]).fadeOut();
+                $(orderDivs[showIndex]).fadeIn();
+                showIndex= showIndex+1;
+            }
+            if(showIndex<orderDivs.length-1){
+                showIndex= showIndex+1;
+            }
+            console.log(2);
         }
-        queryInterval = setInterval(queryOrders, 1000*60*15);//15分钟查询一次，没处理的订单
-        var showIndex = 0;
-        showInterval = setInterval(function () {
-            if(orderDivs.length>0){
-                if(showIndex==0){
-                    $(orderDivs[showIndex]).fadeIn();
-                }else if(showIndex==orderDivs.length-1){
-                    $(orderDivs[showIndex-1]).fadeOut();
-                    $(orderDivs[showIndex]).fadeIn();
-                    showIndex= 0;
+    },1000*60);//1分钟淡入淡出一次
+    function dealBill(orderDiv){
+        $.ajax({
+            type: "POST",
+            url: "/shoes/order/updateOrder?id="+$(orderDiv).attr("orderId"),
+            dataType:"json",
+            async:false,
+            contentType: "application/json",
+            success: function (data) {
+                if(data.flag){
+                    layer.msg("订单处理成功，请尽快出库！", {icon: 1,time:2000});
+                    $(orderDiv).remove();
+                    orderDivs = $("div[orderId]");
                 }else{
-                    $(orderDivs[showIndex-1]).fadeOut();
-                    $(orderDivs[showIndex]).fadeIn();
-                    showIndex= showIndex+1;
-                }
-                if(showIndex<orderDivs.length-1){
-                    showIndex= showIndex+1;
+                    layer.msg("订单处理失败，请联系管理员！",{icon:5,time:2000});
                 }
             }
-        },1000*60);//1分钟淡入淡出一次
-    });
+        });
+    }
     function changePassword() {
         layui.use(["layer"],function () {
             layer = layui.layer;
